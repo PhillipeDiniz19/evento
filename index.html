@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensagem do Dia | CGDF</title>
+    <meta name="description"
+        content="Descubra a mensagem que a vida tem para você hoje com o biscoito da sorte da CGDF.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=Outfit:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #b44c2c;
+            --secondary: #ee9b4d;
+            --bg: #f8d7b0;
+            --text: #2d1a0e;
+            --white: #ffffff;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Outfit', sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background-color: var(--bg);
+            background-image: radial-gradient(#00000005 1px, transparent 1px);
+            background-size: 20px 20px;
+            font-family: var(--font-sans);
+            color: var(--text);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #sorte-page {
+            width: 100%;
+            max-width: 1200px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .headline {
+            margin-bottom: 30px;
+            z-index: 10;
+        }
+
+        .h-pre {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 400;
+            margin-bottom: 5px;
+        }
+
+        .h-main {
+            font-family: var(--font-serif);
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1.1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+
+        .h-main .icon {
+            font-size: 0.6em;
+            color: var(--secondary);
+        }
+
+        .h-sub {
+            font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .h-sub .vida {
+            color: var(--primary);
+            position: relative;
+        }
+
+        .h-sub .vida::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--secondary);
+            border-radius: 2px;
+        }
+
+        .h-sub .star {
+            color: var(--secondary);
+            font-size: 0.8em;
+        }
+
+        .separator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto 30px;
+        }
+
+        .separator span {
+            flex: 1;
+            height: 1px;
+            border-top: 2px dashed var(--primary);
+            opacity: 0.4;
+        }
+
+        .separator .heart {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .cookie-area {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            height: 500px;
+            margin: 0 auto 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+        }
+
+        .cookie-container {
+            margin-top: 150px;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hand {
+            position: absolute;
+            width: 550px;
+            height: auto;
+            z-index: 3;
+            transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none;
+            top: 50%;
+        }
+
+        .hand-left {
+            left: 40%;
+            transform: translate(-100%, -50%);
+        }
+
+        .hand-right {
+            left: 49%;
+            transform: translate(0%, -50%);
+        }
+
+        .aberto .hand-left {
+            transform: translate(-130%, -50%);
+        }
+
+        .aberto .hand-right {
+            transform: translate(30%, -50%);
+        }
+
+        .cookie-parts {
+            position: relative;
+            width: 320px;
+            height: 220px;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        .cookie-part {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s;
+        }
+
+        .cookie-left {
+            opacity: 0;
+        }
+
+        .cookie-right {
+            opacity: 0;
+        }
+
+        /* ── MODAL DA MENSAGEM ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(45, 26, 14, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: var(--bg);
+            background-image: radial-gradient(#00000005 1px, transparent 1px);
+            background-size: 20px 20px;
+            width: min(550px, 90vw);
+            padding: 60px 40px;
+            border-radius: 30px;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(0.8) translateY(20px);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-align: center;
+            border: 3px solid var(--secondary);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .modal-msg {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-weight: 700;
+            font-size: clamp(1.4rem, 4vw, 2.2rem);
+            color: var(--text);
+            line-height: 1.4;
+            margin-bottom: 30px;
+        }
+
+        .modal-footer {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary);
+            opacity: 0.8;
+        }
+
+        /* ── CONFETES ── */
+        .confete {
+            position: fixed;
+            z-index: 2000;
+            pointer-events: none;
+            border-radius: 2px;
+        }
+
+        .btn-wrap {
+            margin-top: 20px;
+        }
+
+        #btn-abrir {
+            background-color: var(--secondary);
+            color: var(--text);
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 12px 50px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #d68032, 0 15px 30px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        #btn-abrir:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 0 #d68032, 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        #btn-abrir:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 #d68032, 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        #btn-abrir span {
+            font-size: 1.2rem;
+        }
+
+        #btn-novo {
+            margin-top: 25px;
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 25px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            display: none;
+            transition: all 0.3s;
+        }
+
+        #btn-novo:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .footer-logos {
+            width: 100%;
+            margin-top: auto;
+            padding: 30px 20px 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            flex-wrap: wrap;
+        }
+
+        .footer-separator {
+            width: 100%;
+            max-width: 500px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0.25;
+            margin: 0 auto 10px;
+        }
+
+        .footer-logos {
+            width: 100%;
+            margin-top: auto;
+            padding: 40px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .footer-logos img {
+            max-height: 100px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .footer-logos img.logo-maior {
+            max-height: 315px;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: rotate(0);
+            }
+
+            25% {
+                transform: rotate(-3deg);
+            }
+
+            75% {
+                transform: rotate(3deg);
+            }
+        }
+
+        .shaking .cookie-parts {
+            animation: shake 0.1s infinite;
+        }
+
+        .sparkle {
+            color: var(--secondary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.6;
+                transform: scale(0.8);
+            }
+        }
+
+        /* ── RESPONSIVO ── */
+
+        /* Tablet landscape / small desktop: 900px–1199px */
+        @media (max-width: 1199px) {
+            .hand {
+                width: 460px;
+            }
+
+            .cookie-area {
+                height: 440px;
+            }
+        }
+
+        /* Tablet portrait: 768px–899px */
+        @media (max-width: 899px) {
+            .hand {
+                width: 380px;
+            }
+
+            .cookie-area {
+                height: 380px;
+            }
+
+            .cookie-container {
+                margin-top: 60px;
+            }
+
+            .hand-left {
+                left: 46%;
+                transform: translate(-108%, -50%);
+            }
+
+            .aberto .hand-left {
+                transform: translate(-148%, -50%);
+            }
+
+            .aberto .hand-right {
+                transform: translate(48%, -50%);
+            }
+        }
+
+        /* Mobile large: 600px–767px */
+        @media (max-width: 767px) {
+            #sorte-page {
+                padding: 30px 15px;
+                justify-content: flex-start;
+                padding-top: 50px;
+            }
+
+            .headline {
+                margin-bottom: 20px;
+            }
+
+            .h-main {
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+
+            .separator {
+                margin: 15px auto 20px;
+            }
+
+            .btn-wrap {
+                margin-top: 10px;
+            }
+
+            #btn-abrir {
+                font-size: 1.2rem;
+                padding: 10px 30px;
+                gap: 10px;
+            }
+
+            .hand {
+                width: 300px;
+            }
+
+            .cookie-area {
+                height: 320px;
+                max-width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .cookie-container {
+                margin-top: 40px;
+            }
+
+            .hand-left {
+                left: 46%;
+                transform: translate(-108%, -50%);
+            }
+
+            .aberto .hand-left {
+                transform: translate(-150%, -50%);
+            }
+
+            .aberto .hand-right {
+                transform: translate(50%, -50%);
+            }
+
+            .modal-content {
+                padding: 50px 25px;
+                border-radius: 20px;
+            }
+
+            .footer-logos {
+                padding: 20px 10px;
+                gap: 30px;
+            }
+
+            .footer-logos img {
+                height: 45px;
+            }
+
+            .footer-logos img.logo-small {
+                height: 30px;
+            }
+        }
+
+        /* Mobile small: até 479px */
+        @media (max-width: 479px) {
+            #sorte-page {
+                padding: 35px 12px;
+            }
+
+            .h-main {
+                font-size: clamp(2rem, 10vw, 2.8rem);
+            }
+
+            .h-sub {
+                font-size: clamp(1rem, 4vw, 1.2rem);
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 6px;
+            }
+
+            #btn-abrir {
+                font-size: 1rem;
+                padding: 10px 22px;
+            }
+
+            .hand {
+                width: 220px;
+            }
+
+            .cookie-area {
+                height: 260px;
+            }
+
+            .cookie-container {
+                margin-top: 30px;
+            }
+
+            .hand-left {
+                left: 46%;
+                transform: translate(-110%, -50%);
+            }
+
+            .aberto .hand-left {
+                transform: translate(-155%, -50%);
+            }
+
+            .aberto .hand-right {
+                transform: translate(55%, -50%);
+            }
+
+            .modal-content {
+                padding: 45px 20px;
+            }
+
+            .modal-msg {
+                font-size: clamp(1.2rem, 5vw, 1.6rem);
+                margin-bottom: 20px;
+            }
+        }
+
+        /* Mobile extra small: até 360px */
+        @media (max-width: 360px) {
+            .hand {
+                width: 185px;
+            }
+
+            .cookie-area {
+                height: 220px;
+            }
+
+            #btn-abrir {
+                font-size: 0.9rem;
+                padding: 9px 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="sorte-page">
+        <div class="headline">
+            <p class="h-pre">Que tal ver a</p>
+            <h1 class="h-main">
+                <span class="sparkle">✨</span>
+                mensagem do dia
+                <span class="sparkle">✨</span>
+            </h1>
+            <p class="h-sub">
+                <span class="star">✦</span>
+                que a <span class="vida">vida</span> tem para você?!
+                <span class="star">✦</span>
+            </p>
+        </div>
+
+        <div class="separator">
+            <span></span>
+            <span class="heart">❤️</span>
+            <span></span>
+        </div>
+
+        <div class="btn-wrap">
+            <button id="btn-abrir" onclick="abrirBiscoito()">
+                <span>✨</span> Abra seu biscoito da sorte! <span>✨</span>
+            </button>
+            <button id="btn-novo" onclick="novoBiscoito()">
+                Tentar a sorte novamente
+            </button>
+        </div>
+
+        <div class="cookie-area" id="cookie-area">
+            <div class="cookie-container" id="cookie-container">
+
+                <!-- Mão esquerda (SVG inline) -->
+                <div class="hand hand-left" id="hand-left">
+                    <svg width="666" height="633" viewBox="0 0 666 633" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M649.908 129.366C649.908 129.366 649.869 129.366 649.844 129.366C615.799 129.366 588.054 139.947 588.054 139.947C565.069 148.334 544.024 161.301 526.213 178.05C498.041 204.682 478.897 239.417 471.473 277.416C464.048 315.429 468.705 354.796 484.796 390.022C500.887 425.247 527.61 454.589 561.227 473.943C562.378 474.602 563.685 474.937 565.017 474.95C566.686 474.95 568.316 474.408 569.661 473.402C590.887 458.06 608.413 438.176 620.96 415.221C633.507 392.267 640.75 366.796 642.173 340.693V293.649C642.173 289.391 645.64 285.932 649.908 285.932L665.094 255.933L649.908 226.101L637.762 182.63L649.908 148.54V129.366Z"
+                            fill="#E5AD5C" />
+                        <path
+                            d="M0.61499 504.098C0.61499 504.098 45.033 460.847 104.934 407.118C156.88 360.525 215.061 318.19 215.061 318.19L292.941 0C292.941 0 341.071 0.670961 337.437 37.3932C334.41 68.0896 326.106 106.631 326.106 106.631L438.251 14.3482C438.251 14.3482 463.952 45.006 445.093 68.6445C426.234 92.2958 351.096 153.586 351.096 153.586L514.152 143.624C514.152 143.624 506.223 192.088 471.726 198.721C437.229 205.353 341.809 211.882 341.809 211.882L480.806 254.372C480.806 254.372 473.11 299.932 437.733 295.391C402.357 290.849 348.897 255.675 322.2 282.216C295.502 308.745 260.889 376.151 310.532 407.518C360.189 438.886 409.962 409.493 430.166 383.622C450.37 357.751 473.679 351.983 495.164 354.254C516.661 356.525 537.913 369.299 537.913 369.299L402.421 490.124L292.049 470.924L116.381 633L0.61499 504.098Z"
+                            fill="#FC826B" />
+                    </svg>
+                </div>
+
+                <!-- Mão direita (SVG inline) -->
+                <div class="hand hand-right" id="hand-right">
+                    <svg width="664" height="633" viewBox="0 0 664 633" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12.8567 129.366C12.8567 129.366 12.8955 129.366 12.9214 129.366C46.9657 129.366 74.7109 139.947 74.7109 139.947C97.696 148.334 118.741 161.301 136.552 178.05C164.724 204.682 183.868 239.417 191.292 277.416C198.717 315.429 194.06 354.796 177.969 390.022C161.878 425.247 135.155 454.589 101.538 473.943C100.386 474.602 99.08 474.937 97.7477 474.95C96.0791 474.95 94.4494 474.408 93.1042 473.402C71.8782 458.06 54.3515 438.176 41.8048 415.221C29.258 392.267 22.0146 366.796 20.5917 340.693V293.649C20.5917 289.391 17.1252 285.932 12.8567 285.932L28.1069 255.933L12.8567 226.101L0.762695 182.63L12.8567 148.54V129.366V129.366Z"
+                            fill="#E5AD5C" />
+                        <path
+                            d="M663.166 504.098C663.166 504.098 618.748 460.847 558.847 407.118C506.9 360.525 448.72 318.19 448.72 318.19L370.839 0C370.839 0 322.709 0.670961 326.344 37.3932C329.37 68.0896 337.675 106.631 337.675 106.631L225.53 14.3482C225.53 14.3482 199.829 45.006 218.687 68.6445C237.546 92.2958 312.685 153.586 312.685 153.586L149.629 143.624C149.629 143.624 157.558 192.088 192.055 198.721C226.552 205.353 321.972 211.882 321.972 211.882L182.975 254.372C182.975 254.372 190.671 299.932 226.047 295.391C261.424 290.849 314.883 255.675 341.581 282.216C368.278 308.745 402.892 376.151 353.248 407.518C303.591 438.886 253.818 409.493 233.614 383.622C213.41 357.751 190.102 351.983 168.617 354.254C147.119 356.525 125.867 369.299 125.867 369.299L261.359 490.124L371.732 470.924L547.399 633L663.153 504.098H663.166Z"
+                            fill="#FC826B" />
+                    </svg>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Modal da Mensagem -->
+        <div class="modal-overlay" id="modal-msg">
+            <div class="modal-content">
+                <button class="modal-close" onclick="fecharModal()">&times;</button>
+                <div class="modal-msg" id="texto-sorte">
+                    A integridade é o caminho da luz.
+                </div>
+                <div class="modal-footer">— CGDF · Mensagem de Integridade</div>
+            </div>
+        </div>
+/teste
+        <div class="footer-logos">
+            <img src="imgs/logo-comissao-etica.png" alt="Comissão de Ética CGDF">
+            <img src="imgs/logo-mastercard.png" alt="Logo" class="logo-maior">
+            <img src="imgs/logo-cgdf.png" alt="Controladoria-Geral do Distrito Federal">
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            var mensagens = [
+                "Você acaba de descobrir: fazer o certo sempre vale a pena.",
+                "Revelação: sua integridade já faz diferença, mesmo em silêncio.",
+                "Hoje você ganhou um lembrete: o certo nunca passa despercebido.",
+                "Descoberta do dia: sua consciência é seu maior guia.",
+                "Você encontrou: coragem para escolher o certo novamente.",
+                "Mensagem especial: sua ética inspira mais do que você imagina.",
+                "Surpresa: alguém já foi impactado por uma decisão sua.",
+                "Você desbloqueou: o poder de agir com integridade.",
+                "Revelação: o bem público começa nas suas escolhas.",
+                "Hoje a sorte te disse: continue fazendo o certo.",
+                "Você encontrou: orgulho em cada decisão íntegra.",
+                "Descoberta: sua postura constrói confiança todos os dias.",
+                "Mensagem do dia: ser ético é essencial.",
+                "Você acaba de lembrar: integridade não depende de plateia.",
+                "Revelação: seu exemplo pode mudar uma cultura inteira.",
+                "Hoje você ganhou: mais um motivo para fazer o certo.",
+                "Você desbloqueou: respeito por si mesmo.",
+                "Descoberta do momento: pequenas atitudes têm grande impacto.",
+                "Mensagem dia: sua ética protege quem você nem conhece.",
+                "Você encontrou: força para manter seus valores.",
+                "Revelação: o cidadão confia em você.",
+                "Hoje você recebeu: um lembrete de que seu trabalho importa.",
+                "Descoberta: sua integridade constrói o futuro.",
+                "Você desbloqueou: a tranquilidade de agir corretamente.",
+                "Mensagem especial: fazer o certo também é cuidar de alguém.",
+                "Você encontrou: sentido no que faz.",
+                "Revelação: sua atitude pode evitar grandes problemas.",
+                "Descoberta: a ética transforma ambientes.",
+                "Hoje você ganhou: mais consciência sobre suas escolhas.",
+                "Você desbloqueou: credibilidade.",
+                "Mensagem do dia: sua integridade é seu maior valor.",
+                "Descoberta: o certo constrói caminhos duradouros.",
+                "Revelação: seu exemplo ecoa além do seu setor.",
+                "Você encontrou: confiança em cada decisão.",
+                "Hoje você ganhou: mais clareza para escolher o melhor caminho.",
+                "Mensagem especial: integridade é liberdade.",
+                "Você desbloqueou: o respeito de quem observa.",
+                "Descoberta: sua postura fortalece o coletivo.",
+                "Revelação: o bem público passa por você.",
+                "Você encontrou: propósito no seu trabalho.",
+                "Hoje você ganhou: coragem para dizer não ao errado.",
+                "Descoberta: a ética constrói pontes.",
+                "Revelação: sua atitude gera confiança.",
+                "Você desbloqueou: consistência.",
+                "Mensagem especial: ser íntegro é ser exemplo.",
+                "Você encontrou: equilíbrio entre razão e valores.",
+                "Descoberta: o certo sempre encontra um caminho.",
+                "Revelação: sua decisão importa mais do que parece.",
+                "Você ganhou: mais força para agir corretamente.",
+                "Mensagem do dia: integridade é liderança silenciosa.",
+                "Você desbloqueou: respeito próprio.",
+                "Descoberta: sua ética inspira confiança.",
+                "Revelação: seu trabalho impacta vidas reais.",
+                "Você encontrou: orgulho em servir.",
+                "Hoje você ganhou: mais consciência ética.",
+                "Mensagem especial: o certo nunca é perda.",
+                "Você desbloqueou: credibilidade duradoura.",
+                "Mensagem especial: sua postura influencia os outros.",
+                "Revelação: sua integridade protege o coletivo.",
+                "Você encontrou: motivação para continuar.",
+                "Hoje você ganhou: um motivo para confiar em si mesmo.",
+                "Descoberta: a ética constrói reputação.",
+                "Revelação: sua atitude fortalece a instituição.",
+                "Você desbloqueou: consistência nos valores.",
+                "Mensagem do dia: integridade é escolha diária.",
+                "Você encontrou: sentido no serviço público.",
+                "Descoberta: fazer o certo transforma realidades.",
+                "Revelação: seu exemplo pode ser seguido.",
+                "Você ganhou: mais clareza moral.",
+                "Mensagem especial: o bem coletivo começa em você.",
+                "Você desbloqueou: confiança do cidadão.",
+                "Descoberta: sua postura gera impacto.",
+                "Revelação: ética é o que sustenta tudo.",
+                "Você encontrou: força para manter seus princípios.",
+                "Hoje você ganhou: mais propósito.",
+                "Mensagem do dia: sua integridade é indispensável.",
+                "Você desbloqueou: respeito institucional.",
+                "Descoberta: o certo constrói o futuro.",
+                "Revelação: sua decisão pode mudar histórias.",
+                "Você encontrou: inspiração para agir melhor.",
+                "Hoje você ganhou: mais responsabilidade consciente.",
+                "Descoberta: sua ética constrói confiança pública.",
+                "Revelação: o impacto do seu trabalho é real.",
+                "Você desbloqueou: valor pessoal.",
+                "Mensagem especial: fazer o certo é sempre um ganho.",
+                "Você encontrou: motivação para fazer a diferença.",
+                "Descoberta: sua atitude fortalece o DF.",
+                "Revelação: integridade é seu legado.",
+                "Você ganhou: mais orgulho do que faz.",
+                "Mensagem especial: sua consciência é sua proteção.",
+                "Você desbloqueou: coerência entre pensar e agir.",
+                "Descoberta: a ética aproxima o governo das pessoas.",
+                "Revelação: sua integridade constrói confiança duradoura.",
+                "Você encontrou: propósito em cada decisão.",
+                "Hoje você ganhou: mais confiança em suas escolhas.",
+                "Mensagem do dia: o certo sempre deixa marcas positivas.",
+                "Você desbloqueou: tranquilidade.",
+                "Descoberta: sua postura faz diferença no todo.",
+                "Revelação: você pode ser exemplo todos os dias.",
+                "Você encontrou: a certeza de que vale a pena fazer o certo.",
+
+                "Você desbloqueou: respeito é a base de qualquer ambiente ético.",
+                "Descoberta: um ambiente saudável começa com atitudes justas.",
+                "Revelação: combater o assédio também é um ato de integridade.",
+                "Você encontrou: coragem para dizer não ao desrespeito.",
+                "Hoje você ganhou: consciência para reconhecer limites.",
+                "Mensagem especial: liderança ética cuida das pessoas.",
+                "Você desbloqueou: escuta ativa e respeitosa.",
+                "Descoberta: o silêncio diante do assédio também impacta.",
+                "Revelação: proteger o outro é um ato de ética.",
+                "Você encontrou: força para agir com empatia.",
+                "Hoje você ganhou: sensibilidade para perceber injustiças.",
+                "Descoberta: um ambiente ético começa no respeito diário.",
+                "Você desbloqueou: responsabilidade com o bem-estar coletivo.",
+                "Mensagem especial: cuidar da saúde mental também é ética.",
+                "Revelação: pressão não justifica desrespeito.",
+                "Você encontrou: equilíbrio entre resultado e respeito.",
+                "Descoberta: ética também é saber ouvir.",
+                "Você desbloqueou: empatia nas relações de trabalho.",
+                "Hoje você ganhou: mais consciência sobre suas atitudes.",
+                "Mensagem especial: respeito não é opcional.",
+                "Você desbloqueou: olhar atento para o que não é dito.",
+                "Descoberta: o cuidado com as pessoas fortalece equipes.",
+                "Revelação: assédio não é gestão.",
+                "Você encontrou: clareza para diferenciar cobrança de abuso.",
+                "Hoje você ganhou: coragem para se posicionar.",
+                "Mensagem especial: ética também é proteger o ambiente.",
+                "Você desbloqueou: responsabilidade emocional.",
+                "Descoberta: palavras podem construir ou ferir.",
+                "Revelação: respeito é prática diária.",
+                "Você encontrou: consciência para agir melhor.",
+                "Hoje você ganhou: mais atenção ao impacto das suas ações.",
+                "Descoberta: auditoria também é cuidado com o coletivo.",
+                "Você desbloqueou: compromisso com a verdade.",
+                "Mensagem do dia: controle é proteção, não punição.",
+                "Revelação: transparência fortalece a confiança.",
+                "Você encontrou: valor no trabalho de auditoria.",
+                "Descoberta: prevenir é melhor que corrigir.",
+                "Você desbloqueou: olhar crítico com responsabilidade.",
+                "Hoje você ganhou: mais clareza sobre seu papel.",
+                "Mensagem especial: integridade sustenta a auditoria.",
+                "Você desbloqueou: coragem para apontar o que precisa melhorar.",
+                "Descoberta: o controle interno começa em você.",
+                "Revelação: agir com ética evita crises.",
+                "Você encontrou: equilíbrio entre rigor e respeito.",
+                "Hoje você ganhou: mais responsabilidade institucional.",
+                "Mensagem: transparência protege todos.",
+                "Você desbloqueou: confiança nos processos.",
+                "Descoberta: auditoria também é construção.",
+                "Revelação: a verdade fortalece decisões.",
+                "Você encontrou: propósito no controle.",
+                "Hoje você ganhou: mais atenção ao coletivo.",
+                "Descoberta: ambientes saudáveis aumentam resultados.",
+                "Você desbloqueou: respeito nas relações.",
+                "Mensagem especial: ética também é cuidar de si.",
+                "Revelação: saúde mental importa.",
+                "Você encontrou: equilíbrio no trabalho.",
+                "Descoberta: pausas também são responsabilidade.",
+                "Você desbloqueou: consciência sobre limites.",
+                "Hoje você ganhou: mais atenção ao bem-estar.",
+                "Mensagem do dia: produtividade sem respeito não sustenta.",
+                "Você desbloqueou: sensibilidade no trato com pessoas.",
+                "Descoberta: respeito melhora tudo ao redor.",
+                "Revelação: ambientes tóxicos não são normais.",
+                "Você encontrou: coragem para mudar isso.",
+                "Hoje você ganhou: mais empatia.",
+                "Mensagem especial: ética também é acolher.",
+                "Você desbloqueou: escuta verdadeira.",
+                "Descoberta: confiança nasce no respeito.",
+                "Revelação: cuidar do outro é um ato ético.",
+                "Você encontrou: propósito nas relações.",
+                "Hoje você ganhou: mais consciência sobre liderança.",
+                "Descoberta: liderar é servir com ética.",
+                "Você desbloqueou: responsabilidade como líder.",
+                "Mensagem do dia: autoridade não justifica abuso.",
+                "Revelação: exemplo vale mais que cobrança.",
+                "Você encontrou: força para liderar com respeito.",
+                "Descoberta: liderança ética transforma equipes.",
+                "Você desbloqueou: influência positiva.",
+                "Hoje você ganhou: mais clareza sobre seu impacto.",
+                "Mensagem especial: liderança também é cuidado.",
+                "Você desbloqueou: consciência sobre conflitos de interesse.",
+                "Descoberta: evitar conflitos é proteger sua integridade.",
+                "Revelação: imparcialidade é essencial.",
+                "Você encontrou: clareza para decidir com justiça.",
+                "Hoje você ganhou: mais responsabilidade nas escolhas.",
+                "Mensagem rara: integridade não admite exceções.",
+                "Você desbloqueou: equilíbrio nas decisões.",
+                "Descoberta: ética é agir sem favorecimentos.",
+                "Revelação: justiça começa em você.",
+                "Você encontrou: compromisso com o coletivo.",
+                "Hoje você ganhou: mais atenção à transparência.",
+                "Descoberta: comunicar com clareza é respeito.",
+                "Você desbloqueou: responsabilidade na informação.",
+                "Revelação: transparência constrói confiança.",
+                "Você encontrou: coragem para ser claro.",
+                "Descoberta: a verdade fortalece relações.",
+                "Você desbloqueou: compromisso com a clareza.",
+                "Revelação: confiança nasce da transparência.",
+                "Você encontrou: a força de agir com ética em qualquer situação."
+            ];
+
+            var container = document.getElementById('cookie-container');
+            var modal = document.getElementById('modal-msg');
+            var texto = document.getElementById('texto-sorte');
+            var btnA = document.getElementById('btn-abrir');
+            var btnN = document.getElementById('btn-novo');
+            var animando = false;
+
+            window.abrirBiscoito = function () {
+                if (animando || container.classList.contains('aberto')) return;
+                animando = true;
+
+                container.classList.add('shaking');
+
+                setTimeout(function () {
+                    container.classList.remove('shaking');
+                    container.classList.add('aberto');
+
+                    texto.textContent = mensagens[Math.floor(Math.random() * mensagens.length)];
+
+                    setTimeout(function () {
+                        modal.style.display = 'flex';
+                        // force reflow for transition
+                        modal.offsetHeight;
+                        modal.classList.add('active');
+                        lancarConfetes();
+                    }, 500);
+
+                    btnA.style.display = 'none';
+                    btnN.style.display = 'inline-block';
+                    animando = false;
+                }, 600);
+            };
+
+            window.fecharModal = function () {
+                modal.classList.remove('active');
+                setTimeout(function () {
+                    modal.style.display = 'none';
+                }, 400);
+            };
+
+            window.novoBiscoito = function () {
+                fecharModal();
+                container.classList.remove('aberto');
+                btnN.style.display = 'none';
+                btnA.style.display = 'flex';
+                setTimeout(function () {
+                    animando = false;
+                }, 700);
+            };
+
+            // Fecha modal clicando fora
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) fecharModal();
+            });
+
+            function lancarConfetes() {
+                var cores = ['#b44c2c', '#ee9b4d', '#f8d7b0', '#ffffff', '#2d1a0e', '#fad070'];
+                for (var i = 0; i < 150; i++) {
+                    (function () {
+                        var confete = document.createElement('div');
+                        confete.className = 'confete';
+                        var cor = cores[Math.floor(Math.random() * cores.length)];
+                        var size = Math.random() * 10 + 5;
+                        confete.style.backgroundColor = cor;
+                        confete.style.width = size + 'px';
+                        confete.style.height = size + 'px';
+                        confete.style.left = '50%';
+                        confete.style.top = '50%';
+                        document.body.appendChild(confete);
+
+                        var angle = Math.random() * Math.PI * 2;
+                        var velocity = Math.random() * 20 + 10;
+                        var vx = Math.cos(angle) * velocity;
+                        var vy = Math.sin(angle) * velocity - 10;
+                        var x = 0, y = 0, g = 0.5, o = 1, r = Math.random() * 360;
+
+                        function update() {
+                            x += vx; y += vy; vy += g; o -= 0.012; r += 7;
+                            confete.style.transform = 'translate(' + x + 'px, ' + y + 'px) rotate(' + r + 'deg)';
+                            confete.style.opacity = o;
+                            if (o > 0 && y < window.innerHeight) {
+                                requestAnimationFrame(update);
+                            } else {
+                                confete.remove();
+                            }
+                        }
+                        requestAnimationFrame(update);
+                    })();
+                }
+            }
+        })();
+    </script>
+</body>
+
+</html>
